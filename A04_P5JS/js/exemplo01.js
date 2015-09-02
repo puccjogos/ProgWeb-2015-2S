@@ -17,7 +17,6 @@ function draw() {
   console.log("elapsed: " + (1000 / (newFrameMs - lastFrameMs)))
   lastFrameMs = newFrameMs
   
-  clear()
   var novoX = ondaX,
       novoY = 100 + (sin(angulo) * 40)
   
