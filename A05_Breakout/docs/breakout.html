@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>breakout.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>breakout.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> raquete = {},
+    bola = {},
+    paredeDireita,
+    paredeTopo,
+    paredeEsquerda,
+    paredes,
+    blocos,
+    velocidadeMaxima = <span class="hljs-number">3</span>,
+    INCREMENTO_VELOCIDADE = <span class="hljs-number">0.1</span>
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setup</span>(<span class="hljs-params"></span>) </span>{
+  createCanvas(<span class="hljs-number">800</span>, <span class="hljs-number">450</span>)
+  noCursor()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>definicao da raquete</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  raquete.sprite = createSprite(width/<span class="hljs-number">2</span>, height - <span class="hljs-number">30</span>, <span class="hljs-number">80</span>, <span class="hljs-number">20</span>)
+  raquete.sprite.immovable = <span class="hljs-literal">true</span>
+  raquete.sprite.shapeColor = color(<span class="hljs-string">'white'</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>definicao da bola</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  bola.sprite = createSprite(width/<span class="hljs-number">2</span>, height/<span class="hljs-number">2</span> + <span class="hljs-number">30</span>, <span class="hljs-number">10</span>, <span class="hljs-number">10</span>)
+  bola.sprite.shapeColor = color(<span class="hljs-string">'white'</span>)
+  bola.sprite.setVelocity(<span class="hljs-number">2</span>, <span class="hljs-number">2</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>bola.sprite.restitution = 1.01
+paredes: imoveis, invisiveis</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  paredes = <span class="hljs-keyword">new</span> Group()
+  paredeTopo = createSprite(width/<span class="hljs-number">2</span>, -<span class="hljs-number">20</span>, width, <span class="hljs-number">50</span>)
+  paredeTopo.immovable = <span class="hljs-literal">true</span>
+  paredeEsquerda = createSprite(-<span class="hljs-number">20</span>, height/<span class="hljs-number">2</span>, <span class="hljs-number">50</span>, height)
+  paredeEsquerda.immovable = <span class="hljs-literal">true</span>
+  paredeDireita = createSprite(width+<span class="hljs-number">20</span>, height/<span class="hljs-number">2</span>, <span class="hljs-number">50</span>, height)
+  paredeDireita.immovable = <span class="hljs-literal">true</span>
+  paredeTopo.shapeColor = 
+    paredeDireita.shapeColor = 
+    paredeEsquerda.shapeColor = 
+    color(<span class="hljs-string">'red'</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>adicionando todos os sprites a um grupo</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  paredes.add(paredeTopo)
+  paredes.add(paredeEsquerda)
+  paredes.add(paredeDireita)
+  bola.grande = <span class="hljs-literal">false</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>definicao e posicionamento dos blocos</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  blocos = <span class="hljs-keyword">new</span> Group()
+  <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> linha = <span class="hljs-number">1</span>;  linha &lt; <span class="hljs-number">7</span>; linha++) {
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> coluna = <span class="hljs-number">1</span>; coluna &lt; <span class="hljs-number">12</span>; coluna++) {
+      <span class="hljs-keyword">var</span> novoBloco = createSprite(<span class="hljs-number">40</span> + coluna * <span class="hljs-number">60</span>, linha * <span class="hljs-number">40</span>, <span class="hljs-number">40</span>, <span class="hljs-number">20</span>)
+      <span class="hljs-keyword">var</span> corNova = color(<span class="hljs-number">100</span> + random(<span class="hljs-number">100</span>), <span class="hljs-number">100</span> + random(<span class="hljs-number">100</span>), <span class="hljs-number">100</span> + random(<span class="hljs-number">100</span>))
+      novoBloco.immovable = <span class="hljs-literal">true</span>
+      novoBloco.shapeColor = corNova
+      blocos.add(novoBloco)
+    }
+  }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">draw</span>(<span class="hljs-params"></span>) </span>{
+  background(<span class="hljs-number">0</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>limita posicao X da raquete</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  raquete.sprite.position.x = constrain(mouseX, <span class="hljs-number">50</span>, <span class="hljs-number">750</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>trata colisoes da bola com raquete</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  bola.sprite.bounce(raquete.sprite, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>rebate em duas direcoes diferentes</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span>(bola.sprite.velocity.x &gt; <span class="hljs-number">0</span> &amp;&amp; 
+       raquete.sprite.position.x &gt; bola.sprite.position.x){
+      bola.sprite.velocity.x *= -<span class="hljs-number">1</span>
+    }
+    <span class="hljs-keyword">else</span> {
+      <span class="hljs-keyword">if</span>(bola.sprite.velocity.x &lt; <span class="hljs-number">0</span> &amp;&amp; 
+       raquete.sprite.position.x &lt; bola.sprite.position.x){
+        bola.sprite.velocity.x *= -<span class="hljs-number">1</span>
+      }
+    }
+    raquete.sprite.scale = <span class="hljs-number">1.5</span>
+    setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+      raquete.sprite.scale = <span class="hljs-number">1</span>
+    }, <span class="hljs-number">50</span>)
+  })</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>trata colisoes com blocos, aumentando a velocidade permitida</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  bola.sprite.bounce(blocos, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">pBola, pBloco</span>) </span>{
+    pBloco.remove()
+    velocidadeMaxima += INCREMENTO_VELOCIDADE
+    bola.sprite.velocity.mult(velocidadeMaxima)
+    bola.sprite.limitSpeed(velocidadeMaxima)
+  })</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>trata as colisoes da bola com as paredes</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  bola.sprite.bounce(paredes, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">if</span>(!bola.grande){
+      bola.grande = <span class="hljs-literal">true</span>
+      bola.sprite.scale = <span class="hljs-number">1.5</span>
+      setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        bola.grande = <span class="hljs-literal">false</span>
+        bola.sprite.scale = <span class="hljs-number">1</span>
+      }, <span class="hljs-number">100</span>)
+    }
+  })</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>desenha todos os sprites na tela</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  drawSprites()
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">mousePressed</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>recarrega a página quando a bolinha se perde</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span>(bola.sprite.position.y &gt; height &amp;&amp; mouseIsPressed){
+    location.reload()
+  }
+  <span class="hljs-keyword">else</span> {
+    fullscreen(<span class="hljs-literal">true</span>)
+  }
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
