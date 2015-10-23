@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+  <head>
+  </head>
+  <body>
+    <ul id="mensagens"></ul>
+    <form action="">
+      <input id="msg" />
+      <button>Enviar</button>
+    </form>
+    <script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script>
+      var socket = io()
+      $("form").submit(function(){
+        var texto = $("#msg").val()
+        /// /nick eusoudemais
+        var ind = texto.indexOf("/nick ")
+        if(ind == 0 && texto.length > 6) {
+          socket.emit("trocar-nome", texto.slice(6, texto.length))
+        }
+        else {
+          socket.emit("msg-chat", texto)
+        }
+        $("#msg").val("")
+        return false
+      })
+      socket.on("msg-chat", function(msg){
+        $("#mensagens").append("<li>" + msg + "</li>")
+      })
+    </script>
+  </body>
+</html>
+
+
+
+
+
+
+
