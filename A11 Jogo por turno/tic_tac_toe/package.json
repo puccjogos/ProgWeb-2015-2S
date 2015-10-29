@@ -1,0 +1,16 @@
+{
+  "name": "tic_tac_toe",
+  "version": "0.0.1",
+  "description": "simple multiplayer tic-tac-toe",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start" : "node index.js"
+  },
+  "author": "Enric Llagostera",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "express": "^4.13.3",
+    "socket.io": "^1.3.7"
+  }
+}
