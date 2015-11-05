@@ -1,7 +1,8 @@
+// cria conexao com servidor
 var socket = io()
 
 var game = new Phaser.Game(
-  280, 280, Phaser.AUTO, "jogo",
+  280, 350, Phaser.AUTO, "jogo",
   { 
     preload : preload, 
     create : create,
@@ -13,7 +14,9 @@ var btnCriar,
     gMenuInicial,
     gCasas
     casas = [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
-    jogador = 1
+    jogador = 0,
+    vez = 0,
+    msg = {}
 
 function preload() {
   game.load.image("btn_criar", "/assets/btn_criar.jpg")
@@ -22,7 +25,7 @@ function preload() {
 }
 
 function create() {
-  //var txt = game.add.text(5, 410, "Seu turno", {font: "bold 30px Arial", fill : "#f00"})
+  msg = game.add.text(5, 300, "asdas", {font: "bold 30px Arial", fill : "#f00"})
   //socket.emit("start-game")
   
   // MENU INICIAL
@@ -40,12 +43,10 @@ function create() {
       var spriteCasa = game.add.sprite(10 + col * 90, 10 + row * 90, "casas", 0)
       spriteCasa.col = col
       spriteCasa.row = row
-      spriteCasa.valor = 0
       spriteCasa.inputEnabled = true
       spriteCasa.input.useHandCursor = true
       spriteCasa.events.onInputDown.add(cliqueCasa, spriteCasa)
       gCasas.add(spriteCasa)
-      console.log(spriteCasa)
     }
   }
   gCasas.visible = false
@@ -54,25 +55,96 @@ function create() {
 }
 
 function criarPartida() {
+  socket.emit("nova-partida")
   gMenuInicial.visible = false
   gCasas.visible = true
-  gCasas.setAll("inputEnabled", true)
-  gCasas.setAll("input.useHandCursor", true)
 }
 
 function entrarPartida() {
   console.log("entrarPartida")
+  gMenuInicial.visible = false
+  gCasas.visible = true
+  socket.emit("procurar-partida")
 }
 
 function cliqueCasa() {
-  if(this.valor == 0) {
-    this.valor = jogador
-    this.frame = this.valor
-    checarFimDeJogo() //vai pro servidor
-    jogador = (jogador == 1)? 2 : 1
+  console.log("clique")
+  if(casas[this.col][this.row] == 0) {
+    socket.emit("clique", {
+      col : this.col,
+      row : this.row
+    })
   }
 }
 
 function update() {
-  
 }
+
+function atualizarTabuleiro() {
+  gCasas.forEach(function(casa){
+    console.log(casas[casa.col][casa.row])
+    console.log(casa)
+    casa.frame  = casas[casa.col][casa.row]
+  }, this)
+}
+
+socket.on("partida-criada", function(nomePartida){
+  msg.text = "Aguardando oponente"
+  gCasas.setAll("inputEnabled", false)
+  gCasas.setAll("input.useHandCursor", false)
+  jogador = 1
+})
+
+socket.on("comecar-partida", function(){
+  jogador = (jogador == 1)? 1 : 2
+  vez = 1
+  if(vez == jogador){
+    gCasas.setAll("inputEnabled", true)
+    gCasas.setAll("input.useHandCursor", true)
+  }
+})
+
+socket.on("avancar-turno", function(data){
+  console.log(data)
+  vez = data.vez
+  casas = data.tabuleiro
+  atualizarTabuleiro()
+  if(vez == jogador){
+    gCasas.setAll("inputEnabled", true)
+    gCasas.setAll("input.useHandCursor", true)
+    msg.text = "sua vez"
+  }
+  else {
+    gCasas.setAll("inputEnabled", false)
+    gCasas.setAll("input.useHandCursor", false)
+    msg.text = "aguarde"
+  }
+})
+
+socket.on("gameover", function(data){
+  casas = data.tabuleiro
+  atualizarTabuleiro()
+  gCasas.setAll("inputEnabled", false)
+  gCasas.setAll("input.useHandCursor", false)
+  msg.text = "jogador " + data.vencedor + " ganhou!"
+  // delay
+  setTimeout(function(){
+    gCasas.visible = false
+    gMenuInicial = true
+  }, 5000)
+  
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+

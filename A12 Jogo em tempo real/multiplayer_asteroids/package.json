@@ -1,0 +1,15 @@
+{
+  "name": "multiplayer_asteroids",
+  "version": "0.0.1",
+  "description": "clone de asteroids com multiplos jogadores",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Enric Llagostera",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "express": "^4.13.3",
+    "socket.io": "^1.3.7"
+  }
+}
