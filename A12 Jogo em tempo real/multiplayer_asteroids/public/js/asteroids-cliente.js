@@ -10,7 +10,7 @@ var game = new Phaser.Game(
 
 var naveJogador,
     setas,
-    intervaloUpdate = 20,
+    intervaloUpdate = 50,
     timerUpdate = 0,
     outros = {},
     prontoParaUpdate = false // variavel usada para nao ler updates do server durante preload
@@ -73,6 +73,16 @@ function update() {
     })
     timerUpdate = intervaloUpdate
   }
+  
+  // percorro todas as outras naves e uso os dados do servidor 
+  // para alterar velocidades
+  /*
+  for(var id in outros){
+    outros[id].body.velocity.set(
+      outros[id].dados.vel_x, outros[id].dados.vel_y)
+    outros[id].body.angularVelocity = outros[id].dados.angVel
+  }
+  */
 }
 
 function screenWrap (sprite) {
@@ -106,6 +116,10 @@ function criarOutro(id, dados) {
 
 function updateOutro(id, dados) {
   outros[id].dados = dados
+  /*
+  outros[id].position.set(dados.pos_x, dados.pos_y)
+  outros[id].angle = dados.rot
+  */
   var duracao = game.time.now - outros[id].antes
   console.log(duracao)
   if(duracao <= 0) {
@@ -113,9 +127,9 @@ function updateOutro(id, dados) {
   }
   game.add.tween(outros[id]).to(
     { 
-      x : dados.pos_x, 
-      y : dados.pos_y,
-      angle : dados.rot
+      x : dados.pos_x + dados.vel_x * game.time.physicsElapsed, 
+      y : dados.pos_y + dados.vel_y * game.time.physicsElapsed,
+      angle : dados.rot + dados.angVel * game.time.physicsElapsed
     }, duracao, "Linear", true)
   outros[id].antes = game.time.now
 }
@@ -150,3 +164,11 @@ socket.on("destruirJogador", function(id){
   //remove da lista de outras naves
   delete outros[id]
 })
+
+
+
+
+
+
+
+

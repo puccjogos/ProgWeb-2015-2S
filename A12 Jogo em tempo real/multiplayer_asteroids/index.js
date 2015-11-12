@@ -28,7 +28,7 @@ io.on("connection", function(socket){
   // a cada X tempo, encaminha infos para todos os conectados
   setInterval(function(){
     io.emit("novasInfos", jogadores)
-  }, 50)
+  }, 100)
   
   // quando um jogador se desconecta
   socket.on("disconnect", function(){
@@ -45,3 +45,13 @@ io.on("connection", function(socket){
 server.listen(3000, function(){
   console.log("servidor rodando em localhost:3000")
 })
+
+
+
+
+
+
+
+
+
+
