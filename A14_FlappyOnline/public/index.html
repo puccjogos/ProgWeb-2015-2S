@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Flappy Treco</title>
+  </head>
+  <body>
+    <style>
+      /* css simples para o fundo */
+      body {
+        background: #000;
+        text-align: center;
+        color: #fff;
+      }
+      canvas {
+        margin: 10px auto 10px auto;
+      }
+    </style>
+    <script>
+    // Carrega a SDK JS do Facebook assíncronamente
+    // retirado da documentação
+    (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'))
+    </script>
+    <script src="lib/p5.js"></script>
+    <script src="lib/p5.play.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="js/flappy.js"></script>
+    <div id="jogo"></div>
+    <div id="status">
+      <fb:login-button scope="public_profile"
+                       onlogin="receberEstadoLogin();">
+      </fb:login-button>
+    </div>
+  </body>
+</html>
